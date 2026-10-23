@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>온라인 현수막 아카이브</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@700;800;900&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; }
+        .font-banner { font-family: 'Gothic A1', 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-red-600 selection:text-white">
+
+    <!-- 글로벌 메인 헤더 -->
+    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('factory')">
+                <div class="bg-gradient-to-br from-red-600 to-red-800 text-white p-2.5 rounded-xl shadow-lg border border-red-500/30">
+                    <i class="fa-solid fa-scroll text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black tracking-tight text-white flex items-center gap-2">
+                        온라인 현수막 아카이브
+                    </h1>
+                    <p class="text-xs text-slate-400">현수막 디자인 공장 & 온라인 게시 광장 시스템</p>
+                </div>
+            </div>
+
+            <!-- 네비게이션 탭 및 관리자 버튼 -->
+            <div class="flex items-center gap-2">
+                <nav class="flex items-center gap-2 bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+                    <button id="nav-factory" onclick="switchTab('factory')" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-red-600 text-white shadow-md">
+                        <i class="fa-solid fa-industry"></i> A. 현수막 공장
+                    </button>
+                    <button id="nav-square" onclick="switchTab('square')" class="px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-bullhorn"></i> B. 현수막 광장 (<span id="tab-square-count">0</span>)
+                    </button>
+                </nav>
+                <button onclick="openAdminModal()" class="bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-amber-400 p-2.5 rounded-xl border border-slate-800 text-xs font-bold transition" title="공지사항 관리자 모드">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- [페이지 A] 현수막 공장 (제작 페이지) -->
+    <main id="page-factory" class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 flex flex-col gap-8">
+        
+        <!-- 공지사항란 -->
+        <section class="bg-gradient-to-r from-red-950/70 via-slate-900 to-amber-950/50 border border-red-500/30 rounded-2xl p-4 sm:p-5 shadow-xl flex items-center gap-4">
+            <div class="bg-red-600/20 text-red-400 p-3 rounded-xl border border-red-500/40 shrink-0">
+                <i class="fa-solid fa-bullhorn text-xl"></i>
+            </div>
+            <div class="flex flex-col gap-1 w-full">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase tracking-wider">NOTICE</span>
+                        <h4 id="announcement-title" class="text-xs sm:text-sm font-bold text-white">이달의 슬로건 공모 안내</h4>
+                    </div>
+                </div>
+                <p id="announcement-text-factory" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+                    [10]월 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 실시간 6000 규격 미리보기 -->
+        <section class="flex flex-col gap-4">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="bg-red-500/10 text-red-400 p-1.5 rounded-lg border border-red-500/20">
+                        <i class="fa-solid fa-eye text-sm"></i>
+                    </span>
+                    <h2 class="text-sm font-bold text-slate-200">실시간 6000 규격 현수막 시안 미리보기</h2>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400">
+                    <span class="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">규격: 6000 x 700 mm</span>
+                    <span class="bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700 text-amber-400" id="preview-theme-badge">선택 색상: 화이트</span>
+                </div>
+            </div>
+
+            <!-- 현수막 렌더링 캔버스 컨테이너 -->
+            <div class="w-full bg-slate-950/80 p-4 sm:p-6 rounded-xl border border-slate-800 flex items-center justify-center overflow-x-auto">
+                <div id="banner-preview-box" class="w-full max-w-[1100px] rounded-lg shadow-2xl flex flex-col justify-between p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden text-center bg-slate-100 border-slate-300 text-slate-900" style="min-height: 160px; aspect-ratio: 6000 / 700;">
+                    
+                    <div class="flex items-center justify-between z-10 w-full text-[11px] sm:text-xs opacity-90">
+                        <span id="pv-hashtag" class="font-bold text-red-600 bg-red-500/10 px-2.5 py-0.5 rounded-md border border-red-500/20">#개혁입법</span>
+                        <span id="pv-org" class="font-banner font-bold uppercase">자유와 혁신당</span>
+                        <span class="w-16"></span>
+                    </div>
+
+                    <div id="pv-main-container" class="z-10 my-auto py-1 text-center">
+                        <h3 id="pv-main" class="font-banner font-black tracking-tight leading-none break-keep text-lg sm:text-2xl md:text-3xl lg:text-4xl whitespace-nowrap overflow-hidden text-ellipsis">
+                            주적이 누구인지 묻거든, 고개들어 청와대를 보라!
+                        </h3>
+                    </div>
+
+                    <div id="pv-sub-container" class="z-10 flex items-center justify-between gap-2 border-t border-black/10 pt-2 text-center">
+                        <p id="pv-sub" class="font-banner font-bold text-[10px] sm:text-xs md:text-sm tracking-normal line-clamp-1 w-full text-slate-700 text-center">
+                            MDL 기준선 변경시킨 이재명, DMZ 교전수칙 변경한 문재인 , 9.19 군사합의 일방복원 주장하는 이재명
+                        </p>
+                        <span class="text-[9px] font-mono whitespace-nowrap hidden sm:inline-block opacity-70">6000mm WIDE</span>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 px-1">
+                <span><i class="fa-solid fa-info-circle text-slate-500 mr-1"></i>실제 대형 현수막 인쇄 비율(가로 6000mm)에 맞추어 자동 계산된 시안입니다.</span>
+                <button onclick="downloadCanvasImage()" class="text-red-400 hover:text-red-300 font-bold flex items-center gap-1 transition">
+                    <i class="fa-solid fa-download"></i> 고해상도 PNG 이미지 저장
+                </button>
+            </div>
+        </section>
+
+        <!-- 현수막 설정 및 생성 폼 -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col gap-6">
+                <div class="flex items-center gap-2 border-b border-slate-800 pb-3">
+                    <i class="fa-solid fa-sliders text-red-500"></i>
+                    <h3 class="text-base font-bold text-white" id="form-heading-title">현수막 옵션, 해시태그 및 문구 선택</h3>
+                </div>
+
+                <form id="factory-form" onsubmit="window.handleCreateBanner(event)" class="flex flex-col gap-5">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                                <i class="fa-solid fa-user text-amber-400"></i> 작성자 이름 <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="input-author" required maxlength="15" 
+                                placeholder="작성자 성함/닉네임" 
+                                class="bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                                <i class="fa-solid fa-key text-amber-400"></i> 게시물 삭제 비밀번호 <span class="text-red-500">*</span>
+                            </label>
+                            <input type="password" id="input-password" required maxlength="20" 
+                                placeholder="삭제 시 필요한 비밀번호" 
+                                class="bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-300">단체명 (상단 소속명) <span class="text-red-500">*</span></label>
+                            <input type="text" id="input-org" required maxlength="30" 
+                                value="자유와 혁신당" 
+                                placeholder="예: 자유와 혁신당, 시민연대" 
+                                class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition"
+                                oninput="updatePreview()">
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                                <i class="fa-solid fa-hashtag text-red-400"></i> 주제 (#해시태그) <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" id="input-hashtag" required maxlength="20" 
+                                value="#개혁입법" 
+                                placeholder="예: #개혁입법" 
+                                class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition"
+                                oninput="updatePreview()">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">메인 슬로건 <span class="text-red-500">*</span></label>
+                        <input type="text" id="input-main" required maxlength="60" 
+                            value="주적이 누구인지 묻거든, 고개들어 청와대를 보라!" 
+                            placeholder="강렬하고 선명한 메인 구호를 입력하세요" 
+                            class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm font-bold text-white focus:outline-none focus:border-red-500 transition"
+                            oninput="updatePreview()">
+                    </div>
+
+                    <div class="flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-slate-300">부 슬로건 (하단 설명 문구)</label>
+                        <textarea id="input-sub" rows="2" maxlength="120" 
+                            placeholder="상세 설명이나 부가 구호를 입력하세요" 
+                            class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-red-500 transition resize-none"
+                            oninput="updatePreview()">MDL 기준선 변경시킨 이재명, DMZ 교전수칙 변경한 문재인 , 9.19 군사합의 일방복원 주장하는 이재명</textarea>
+                    </div>
+
+                    <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                                <i class="fa-solid fa-text-height text-amber-400"></i> 메인 슬로건 글씨 크기
+                            </label>
+                            <select id="font-size-option" onchange="updatePreview()" class="bg-slate-900 border border-slate-800 text-xs text-white rounded-lg px-3 py-2 focus:outline-none focus:border-red-500">
+                                <option value="sm">작게</option>
+                                <option value="md">보통</option>
+                                <option value="lg" selected>크게 (기본)</option>
+                                <option value="xl">매우 크게</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 펜텔 파스텔 16색 팔레트 선택기 -->
+                    <div class="flex flex-col gap-2">
+                        <label class="text-xs font-bold text-slate-300 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-palette text-amber-400"></i> 펜텔 오일 파스텔 16색 팔레트 색상 선택</span>
+                            <span id="selected-color-label" class="text-[11px] text-amber-400 font-normal">선택: 화이트 (#ffffff)</span>
+                        </label>
+                        <div id="pastel-palette-grid" class="grid grid-cols-4 sm:grid-cols-8 gap-2 bg-slate-950/80 p-3 rounded-xl border border-slate-800"></div>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <button type="submit" id="submit-btn-main" class="flex-grow bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-black py-4 px-6 rounded-xl shadow-lg transition flex items-center justify-center gap-2 text-sm tracking-wide">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> 현수막 광장에 등록 및 게시하기
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- 우측 안내 및 통계 섹션 -->
+            <div class="lg:col-span-4 flex flex-col gap-6">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+                    <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info text-amber-400"></i> 현수막 아카이브 규격 지침
+                    </h4>
+                    <ul class="text-xs text-slate-400 flex flex-col gap-2.5 leading-relaxed">
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">•</span>
+                            <span><strong>6000 x 700 mm 표준 규격:</strong> 거리 게시 및 행진용 표준 가로 폭 6m 현수막 규격으로 일괄 고정 제작됩니다.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-red-400 font-bold">•</span>
+                            <span><strong>자유 게시 광장:</strong> 누구나 자유롭게 슬로건을 제작하여 공유하고 응원을 보낼 수 있습니다.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 flex items-center justify-between shadow-xl">
+                    <div>
+                        <span class="text-xs text-slate-500 block">아카이브 등록 수</span>
+                        <span id="stat-total-count" class="text-2xl font-black text-red-500">0</span>
+                    </div>
+                    <div class="h-8 w-px bg-slate-800"></div>
+                    <div>
+                        <span class="text-xs text-slate-500 block">총 누적 응원수</span>
+                        <span id="stat-total-likes" class="text-2xl font-black text-amber-400">0</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- [페이지 B] 현수막 광장 -->
+    <main id="page-square" class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 hidden flex-col gap-8">
+        
+        <section class="bg-gradient-to-r from-red-950/70 via-slate-900 to-amber-950/50 border border-red-500/30 rounded-2xl p-4 sm:p-5 shadow-xl flex items-center gap-4">
+            <div class="bg-red-600/20 text-red-400 p-3 rounded-xl border border-red-500/40 shrink-0">
+                <i class="fa-solid fa-bullhorn text-xl"></i>
+            </div>
+            <div class="flex flex-col gap-1 w-full">
+                <div class="flex items-center gap-2">
+                    <span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase tracking-wider">NOTICE</span>
+                    <h4 class="text-xs sm:text-sm font-bold text-white" id="announcement-title-square">이달의 슬로건 공모 안내</h4>
+                </div>
+                <p id="announcement-text" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
+                    [10]월 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.
+                </p>
+            </div>
+        </section>
+
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-lg font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-bullhorn text-red-500"></i> B. 현수막 광장
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">월별 랭킹 현수막과 전체 아카이브 목록을 확인하세요.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-3">
+                <div class="flex flex-wrap items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 w-full sm:w-auto">
+                    <button id="sort-monthly" onclick="setSortMode('monthly')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950">
+                        <i class="fa-solid fa-trophy mr-1"></i>월별 랭킹 (기본)
+                    </button>
+                    <button id="sort-latest" onclick="setSortMode('latest')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                        등록순 (최신)
+                    </button>
+                    <button id="sort-likes" onclick="setSortMode('likes')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-heart text-red-400 mr-1"></i>전체 인기순
+                    </button>
+                </div>
+
+                <div id="monthly-filter-container" class="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-amber-500/30">
+                    <select id="filter-year" onchange="renderSquare()" class="bg-slate-900 border border-slate-800 text-xs text-white rounded-lg px-2 py-1 focus:outline-none focus:border-red-500">
+                        <option value="2026" selected>2026년</option>
+                        <option value="2025">2025년</option>
+                    </select>
+                    <select id="filter-month" onchange="onMonthFilterChange()" class="bg-slate-900 border border-slate-800 text-xs font-bold text-amber-400 rounded-lg px-2 py-1 focus:outline-none focus:border-red-500">
+                        <option value="1">1월</option><option value="2">2월</option><option value="3">3월</option>
+                        <option value="4">4월</option><option value="5">5월</option><option value="6">6월</option>
+                        <option value="7">7월</option><option value="8">8월</option><option value="9">9월</option>
+                        <option value="10" selected>10월</option><option value="11">11월</option><option value="12">12월</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section id="ranking-banner-section" class="flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-crown text-amber-400"></i> 이달의 현수막 배너 모음
+                </h3>
+                <span class="text-xs text-slate-400">월별 랭킹 화면에서 직접 좋아요 응원이 가능합니다</span>
+            </div>
+            <div id="ranking-banner-grid" class="grid grid-cols-1 gap-6"></div>
+        </section>
+
+        <section id="list-table-section" class="flex flex-col gap-4 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul text-red-500"></i>
+                    <h3 class="text-sm font-bold text-white">현수막 아카이브 목록</h3>
+                    <span id="list-count-badge" class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">0개</span>
+                </div>
+
+                <div class="relative w-full sm:w-72">
+                    <input type="text" id="search-keyword" placeholder="문구, 단체명, 해시태그 검색..." oninput="renderSquare()"
+                        class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-red-500 transition">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-500 text-xs"></i>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="bg-slate-950 text-slate-400 border-b border-slate-800 font-bold">
+                            <th class="p-3 w-16 text-center">번호</th>
+                            <th class="p-3">소속 단체 / 주제</th>
+                            <th class="p-3">메인 슬로건 (클릭 시 배너 보기)</th>
+                            <th class="p-3 w-28 text-center">등록일</th>
+                            <th class="p-3 w-24 text-center">응원수</th>
+                            <th class="p-3 w-24 text-center">관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="square-list-tbody" class="divide-y divide-slate-800/60 text-slate-300"></tbody>
+                </table>
+            </div>
+
+            <div id="empty-square" class="hidden flex-col items-center justify-center py-12 text-center">
+                <i class="fa-solid fa-box-open text-3xl text-slate-600 mb-2"></i>
+                <p class="text-xs font-bold text-slate-400">조건에 해당하는 현수막 목록이 없습니다.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-950 border-t border-slate-800 text-slate-500 text-xs py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+                <p class="font-bold text-slate-300">온라인 현수막 아카이브 시스템</p>
+                <p class="mt-1">6000mm 규격 전용 현수막 제작 및 공유 플랫폼입니다.</p>
+            </div>
+            <div class="text-slate-400">
+                <span class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800 font-mono text-[11px]">가로 6000mm x 세로 700mm</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 배너 크게 보기 상세 모달 -->
+    <div id="banner-modal-backdrop" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 hidden" onclick="closeBannerModal(event)">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 max-w-[95vw] w-full shadow-2xl flex flex-col gap-4 relative" onclick="event.stopPropagation()">
+            <button onclick="closeBannerModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center gap-2">
+                <span class="bg-red-500/10 text-red-400 p-1.5 rounded-lg border border-red-500/20"><i class="fa-solid fa-expand"></i></span>
+                <h3 class="text-base font-bold text-white" id="modal-banner-title">현수막 배너 상세 보기</h3>
+            </div>
+
+            <div id="modal-banner-container" class="w-full overflow-x-auto bg-slate-950 p-2 sm:p-4 rounded-xl border border-slate-800 flex items-center justify-center"></div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-xs">
+                <div class="flex items-center gap-3 text-slate-300">
+                    <span id="modal-banner-author" class="font-bold"><i class="fa-solid fa-user text-amber-400 mr-1"></i>-</span>
+                    <span>•</span>
+                    <span id="modal-banner-date" class="text-slate-400"><i class="fa-solid fa-calendar mr-1"></i>-</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="modal-like-btn" class="bg-red-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-red-500 transition flex items-center gap-2">
+                        <i class="fa-solid fa-heart"></i> 응원하기 <span id="modal-like-count">0</span>
+                    </button>
+                    <button id="modal-delete-btn" class="bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 px-3 py-2 rounded-xl font-bold transition">
+                        <i class="fa-solid fa-trash-can"></i> 삭제
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 공지사항 관리자 모달 -->
+    <div id="admin-modal-backdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-gear text-amber-400"></i> 공지사항 관리자 모드
+                </h3>
+                <button onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-300 flex items-center justify-between">
+                        <span>관리자 인증</span>
+                    </label>
+                    <input type="text" id="admin-pw" placeholder="인증 번호 입력" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-red-500 font-mono">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-300">적용할 월 (예: 10)</label>
+                    <input type="text" id="admin-notice-month" maxlength="2" placeholder="10" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-red-500">
+                </div>
+                <div class="flex flex-col gap-1">
+                    <label class="text-xs font-bold text-slate-300">공지사항 내용</label>
+                    <textarea id="admin-notice-content" rows="3" placeholder="공지 내용을 입력하세요" class="bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-red-500 resize-none"></textarea>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <button onclick="closeAdminModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded-xl text-xs transition">취소</button>
+                <button onclick="saveNoticeToLocal()" class="bg-red-600 hover:bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs transition">저장 및 반영</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 기본 알림 모달 -->
+    <div id="modal-backdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 text-center">
+            <div id="modal-icon" class="text-4xl text-red-500"></div>
+            <h3 id="modal-title" class="text-base font-bold text-white"></h3>
+            <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+            <button onclick="closeModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 rounded-xl text-xs transition border border-slate-700">확인</button>
+        </div>
+    </div>
+
+    <!-- 삭제 비밀번호 입력 모달 -->
+    <div id="delete-modal-backdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col gap-4 text-center">
+            <div class="text-3xl text-red-500"><i class="fa-solid fa-trash-can"></i></div>
+            <h3 class="text-base font-bold text-white">현수막 게시물 삭제</h3>
+            <p class="text-xs text-slate-400">작성 시 설정한 삭제 비밀번호를 입력하세요.</p>
+            <input type="password" id="delete-password-input" placeholder="비밀번호 입력" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-center text-sm text-white focus:outline-none focus:border-red-500">
+            <div class="grid grid-cols-2 gap-2 mt-1">
+                <button onclick="closeDeleteModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2 rounded-xl text-xs transition">취소</button>
+                <button onclick="window.confirmDeleteBanner()" class="bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-xl text-xs transition">삭제하기</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="export-canvas" class="hidden"></canvas>
+
+    <!-- Firebase JS SDK 및 앱 로직 -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, setPersistence, inMemoryPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, deleteDoc, doc, onSnapshot, query, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDJNCEpD8jYQhcrBQy4bCqEC64Nih1bLDE",
+          authDomain: "slogankorea.firebaseapp.com",
+          projectId: "slogankorea",
+          storageBucket: "slogankorea.firebasestorage.app",
+          messagingSenderId: "382205145793",
+          appId: "1:382205145793:web:d26722d64d3744e50f1a40",
+          measurementId: "G-FCMLR7YFER"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        try { getAnalytics(app); } catch (e) {}
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const bannersCollection = collection(db, 'banners');
+
+        window.db = db;
+        window.auth = auth;
+        window.bannersCollection = bannersCollection;
+        
+        let bannerList = [];
+        let unsubscribeBanners = null;
+
+        async function hashPassword(plainText) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(plainText);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function generateFormattedId(timestamp, existingBanners) {
+            const d = new Date(timestamp || Date.now());
+            const yy = String(d.getFullYear()).slice(-2);
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const prefix = `${yy}${mm}`;
+
+            let maxSeq = 0;
+            existingBanners.forEach(item => {
+                if (item.id && typeof item.id === 'string' && item.id.startsWith(prefix)) {
+                    const parts = item.id.split('-');
+                    if (parts.length === 2) {
+                        const seq = parseInt(parts[1], 10);
+                        if (!isNaN(seq) && seq > maxSeq) {
+                            maxSeq = seq;
+                        }
+                    }
+                }
+            });
+
+            const nextSeq = String(maxSeq + 1).padStart(4, '0');
+            return `${prefix}-${nextSeq}`;
+        }
+
+        window.addEventListener('load', async () => {
+            try {
+                await setPersistence(auth, inMemoryPersistence).catch(() => {});
+                await signInAnonymously(auth);
+            } catch (error) {}
+            
+            subscribeRealtimeBanners();
+            initPaletteGrid();
+            loadNoticeFromLocal();
+        });
+
+        function subscribeRealtimeBanners() {
+            if (unsubscribeBanners) unsubscribeBanners();
+            const q = query(bannersCollection);
+
+            unsubscribeBanners = onSnapshot(q, (snapshot) => {
+                const firestoreBanners = [];
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    firestoreBanners.push({
+                        id: docSnap.id,
+                        hashtag: data.hashtag || '#개혁입법',
+                        ...data
+                    });
+                });
+
+                bannerList = firestoreBanners;
+
+                if (typeof updatePreview === 'function') updatePreview();
+                if (typeof renderSquare === 'function') renderSquare();
+                if (typeof updateStats === 'function') updateStats();
+            }, (error) => {
+                console.error("실시간 동기화 오류:", error);
+            });
+        }
+
+        window.handleCreateBanner = async function(e) {
+            if (e) e.preventDefault();
+
+            const author = document.getElementById('input-author').value.trim();
+            const rawPassword = document.getElementById('input-password').value.trim();
+            const org = document.getElementById('input-org').value.trim();
+            const hashtag = document.getElementById('input-hashtag').value.trim();
+            const main = document.getElementById('input-main').value.trim();
+            const sub = document.getElementById('input-sub').value.trim();
+
+            const theme = window.selectedPastelColor || 'white';
+            const fontSize = document.getElementById('font-size-option').value;
+
+            if (!author || !rawPassword || !org || !hashtag || !main) {
+                showModal('필수 항목 누락', '작성자 이름, 비밀번호, 단체명, 해시태그, 메인 슬로건은 필수 입력 항목입니다.');
+                return;
+            }
+
+            try {
+                const passwordHash = await hashPassword(rawPassword);
+                const createdAt = Date.now();
+                const customId = generateFormattedId(createdAt, bannerList);
+
+                const newBanner = {
+                    id: customId,
+                    author,
+                    passwordHash,
+                    org,
+                    hashtag,
+                    main,
+                    sub,
+                    theme,
+                    fontSize,
+                    createdAt,
+                    likes: 0
+                };
+
+                await setDoc(doc(db, 'banners', customId), newBanner);
+                showModal('게첩 완료!', `현수막(ID: ${customId})이 파스텔 컬러로 저장되어 온라인 광장에 게시되었습니다.`, 'success');
+                
+                document.getElementById('factory-form').reset();
+                selectPastelColor('white');
+                updatePreview();
+
+                setTimeout(() => {
+                    closeModal();
+                    switchTab('square');
+                }, 1200);
+            } catch (err) {
+                console.error("현수막 저장 실패:", err);
+                showModal('저장 오류', '현수막 등록 중 오류가 발생했습니다.');
+            }
+        };
+
+        window.likeBanner = async function(id) {
+            let likedIds = [];
+            try { likedIds = JSON.parse(localStorage.getItem('liked_banners') || '[]'); } catch (e) { likedIds = []; }
+
+            if (likedIds.includes(id)) {
+                showModal('이미 응원 완료', '이미 응원하신 현수막입니다!');
+                return;
+            }
+
+            const target = bannerList.find(b => b.id === id);
+            if (target) {
+                likedIds.push(id);
+                localStorage.setItem('liked_banners', JSON.stringify(likedIds));
+
+                try {
+                    const newLikes = (target.likes || 0) + 1;
+                    const docRef = doc(db, 'banners', id);
+                    await updateDoc(docRef, { likes: newLikes });
+                    showModal('응원 완료!', '현수막에 응원을 보냈습니다.', 'success');
+                } catch (err) {
+                    console.error("응원 업데이트 실패:", err);
+                }
+            }
+        };
+
+        window.confirmDeleteBanner = async function() {
+            if (!window.deleteTargetId) return;
+
+            const inputPw = document.getElementById('delete-password-input').value.trim();
+            const target = bannerList.find(b => b.id === window.deleteTargetId);
+
+            if (!target) { closeDeleteModal(); return; }
+
+            const inputHash = await hashPassword(inputPw);
+
+            if (inputHash === target.passwordHash || inputPw === target.password) {
+                try {
+                    const docRef = doc(db, 'banners', window.deleteTargetId);
+                    await deleteDoc(docRef);
+                    closeDeleteModal();
+                    closeBannerModal();
+                    showModal('삭제 완료', '현수막 게시물이 삭제되었습니다.', 'success');
+                } catch (err) {
+                    console.error("삭제 실패:", err);
+                    showModal('삭제 오류', '게시물을 삭제하는 중 오류가 발생했습니다.');
+                }
+            } else {
+                showModal('비밀번호 불일치', '입력하신 비밀번호가 올바르지 않습니다.');
+            }
+        };
+
+        window.bannerListRef = () => bannerList;
+    </script>
+
+    <!-- UI 및 파스텔 스와치 스크립트 -->
+    <script>
+        const PASTEL_16_COLORS = {
+            'white': { name: '화이트 (白)', bg: 'bg-slate-100', text: 'text-slate-900', subText: 'text-slate-700', border: 'border-slate-300', hex: '#ffffff' },
+            'yellow': { name: '옐로우 (黃)', bg: 'bg-amber-200', text: 'text-amber-950', subText: 'text-amber-800', border: 'border-amber-400', hex: '#fef08a' },
+            'yellow-green': { name: '연두 (黃綠)', bg: 'bg-lime-200', text: 'text-lime-950', subText: 'text-lime-800', border: 'border-lime-400', hex: '#d9f99d' },
+            'green': { name: '초록 (綠)', bg: 'bg-emerald-300', text: 'text-emerald-950', subText: 'text-emerald-900', border: 'border-emerald-500', hex: '#86efac' },
+            'sky-blue': { name: '하늘 (水色)', bg: 'bg-sky-200', text: 'text-sky-950', subText: 'text-sky-800', border: 'border-sky-400', hex: '#bae6fd' },
+            'blue': { name: '파랑 (靑)', bg: 'bg-blue-300', text: 'text-blue-950', subText: 'text-blue-900', border: 'border-blue-400', hex: '#93c5fd' },
+            'purple': { name: '보라 (紫)', bg: 'bg-purple-300', text: 'text-purple-950', subText: 'text-purple-900', border: 'border-purple-400', hex: '#d8b4fe' },
+            'pink': { name: '분홍 (桃色)', bg: 'bg-pink-200', text: 'text-pink-950', subText: 'text-pink-800', border: 'border-pink-400', hex: '#fbcfe8' },
+            'red': { name: '빨강 (赤)', bg: 'bg-rose-300', text: 'text-rose-950', subText: 'text-rose-900', border: 'border-rose-400', hex: '#fda4af' },
+            'orange': { name: '귤색 (橙色)', bg: 'bg-orange-300', text: 'text-orange-950', subText: 'text-orange-900', border: 'border-orange-400', hex: '#fdba74' },
+            'pale-orange': { name: '살구 (살구色)', bg: 'bg-orange-100', text: 'text-orange-950', subText: 'text-orange-800', border: 'border-orange-200', hex: '#ffedd5' },
+            'ochre': { name: '황토 (黃土)', bg: 'bg-amber-300', text: 'text-amber-950', subText: 'text-amber-900', border: 'border-amber-500', hex: '#fcd34d' },
+            'brown': { name: '갈색 (茶色)', bg: 'bg-amber-600', text: 'text-white', subText: 'text-amber-100', border: 'border-amber-700', hex: '#d97706' },
+            'dark-brown': { name: '고동 (焦茶)', bg: 'bg-stone-700', text: 'text-amber-50', subText: 'text-stone-300', border: 'border-stone-800', hex: '#44403c' },
+            'gray': { name: '회색 (灰色)', bg: 'bg-slate-300', text: 'text-slate-900', subText: 'text-slate-700', border: 'border-slate-400', hex: '#cbd5e1' },
+            'black': { name: '검정 (黑)', bg: 'bg-slate-900', text: 'text-amber-300', subText: 'text-slate-300', border: 'border-slate-700', hex: '#0f172a' }
+        };
+
+        window.selectedPastelColor = 'white';
+        window.deleteTargetId = null;
+        let currentSort = 'monthly';
+
+        function initPaletteGrid() {
+            const grid = document.getElementById('pastel-palette-grid');
+            if (!grid) return;
+            let html = '';
+
+            Object.keys(PASTEL_16_COLORS).forEach(key => {
+                const item = PASTEL_16_COLORS[key];
+                const isSelected = key === window.selectedPastelColor;
+                html += `
+                    <button type="button" onclick="selectPastelColor('${key}')" 
+                        class="flex flex-col items-center justify-between p-1.5 rounded-lg border-2 transition-all ${isSelected ? 'border-amber-400 ring-2 ring-amber-400/50 scale-105' : 'border-slate-800 hover:border-slate-600'}"
+                        title="${item.name}">
+                        <div class="w-full h-7 rounded-md ${item.bg} ${item.border} border shadow-inner"></div>
+                        <span class="text-[9px] font-bold text-slate-300 mt-1 truncate w-full text-center">${item.name.split(' ')[0]}</span>
+                    </button>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function selectPastelColor(key) {
+            window.selectedPastelColor = key;
+            const item = PASTEL_16_COLORS[key];
+            const labelEl = document.getElementById('selected-color-label');
+            if (labelEl) labelEl.innerText = `선택: ${item.name} (${item.hex})`;
+            initPaletteGrid();
+            updatePreview();
+        }
+
+        function updateStats() {
+            const list = window.bannerListRef ? window.bannerListRef() : [];
+            const sqCount = document.getElementById('tab-square-count');
+            if (sqCount) sqCount.innerText = list.length;
+            const statTotalCount = document.getElementById('stat-total-count');
+            if (statTotalCount) statTotalCount.innerText = list.length;
+            const totalLikes = list.reduce((acc, cur) => acc + (cur.likes || 0), 0);
+            const statTotalLikes = document.getElementById('stat-total-likes');
+            if (statTotalLikes) statTotalLikes.innerText = totalLikes;
+        }
+
+        function onMonthFilterChange() {
+            renderSquare();
+        }
+
+        function switchTab(tab) {
+            const pageFactory = document.getElementById('page-factory');
+            const pageSquare = document.getElementById('page-square');
+            
+            const navFactory = document.getElementById('nav-factory');
+            const navSquare = document.getElementById('nav-square');
+
+            if (!pageFactory || !pageSquare) return;
+
+            pageFactory.classList.add('hidden');
+            pageSquare.classList.add('hidden');
+            pageSquare.classList.remove('flex');
+
+            if (navFactory) navFactory.className = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
+            if (navSquare) navSquare.className = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 text-slate-400 hover:text-white";
+
+            if (tab === 'factory') {
+                pageFactory.classList.remove('hidden');
+                if (navFactory) navFactory.className = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-red-600 text-white shadow-md";
+            } else if (tab === 'square') {
+                pageSquare.classList.remove('hidden');
+                pageSquare.classList.add('flex');
+                if (navSquare) navSquare.className = "px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 bg-red-600 text-white shadow-md";
+                renderSquare();
+            }
+        }
+
+        function loadNoticeFromLocal() {
+            const savedNotice = localStorage.getItem('site_announcement');
+            let noticeData;
+            if (savedNotice) {
+                try {
+                    noticeData = JSON.parse(savedNotice);
+                } catch (e) {
+                    noticeData = { month: '10', content: '이달의 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.' };
+                }
+            } else {
+                noticeData = { month: '10', content: '이달의 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.' };
+            }
+            applyNoticeToUI(noticeData.month, noticeData.content);
+        }
+
+        function applyNoticeToUI(month, content) {
+            const html = `[${month}]월 슬로건 공지: ${escapeHtml(content)}`;
+            const ann1 = document.getElementById('announcement-text');
+            if (ann1) ann1.innerHTML = html;
+            const ann2 = document.getElementById('announcement-text-factory');
+            if (ann2) ann2.innerHTML = html;
+        }
+
+        // 현재 랭킹 1위 배너의 ID를 반환하는 헬퍼 함수
+        function getCurrentTopBannerId() {
+            const list = window.bannerListRef ? window.bannerListRef() : [];
+            if (list.length === 0) return null;
+
+            // 좋아요(likes) 수를 기준으로 내림차순 정렬하여 가장 위에 있는 배너 선택
+            const sorted = [...list].sort((a, b) => (b.likes || 0) - (a.likes || 0));
+            return sorted[0].id; // 예: "2610-0001"
+        }
+
+        function openAdminModal() {
+            const savedNotice = localStorage.getItem('site_announcement');
+            let month = '10';
+            let content = '이달의 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.';
+            if (savedNotice) {
+                try {
+                    const parsed = JSON.parse(savedNotice);
+                    month = parsed.month || '10';
+                    content = parsed.content || content;
+                } catch (e) {}
+            }
+
+            document.getElementById('admin-pw').value = '';
+            document.getElementById('admin-notice-month').value = month;
+            document.getElementById('admin-notice-content').value = content;
+            document.getElementById('admin-modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-modal-backdrop').classList.add('hidden');
+        }
+
+        function saveNoticeToLocal() {
+            const inputPw = document.getElementById('admin-pw').value.trim();
+            const topBannerId = getCurrentTopBannerId();
+
+            if (!topBannerId) {
+                showModal('인증 오류', '현재 등록된 현수막 배너가 없습니다.');
+                return;
+            }
+
+            // 입력한 비밀번호가 현재 랭킹 1위 배너의 ID와 일치하는지 검증 (실패 시 상세 ID 노출 제거)
+            if (inputPw !== topBannerId) {
+                showModal('인증 실패', '인증에 실패했습니다.');
+                return;
+            }
+
+            const month = document.getElementById('admin-notice-month').value.trim() || '10';
+            const content = document.getElementById('admin-notice-content').value.trim();
+
+            if (!content) {
+                showModal('내용 입력', '공지사항 내용을 입력해주세요.');
+                return;
+            }
+
+            const noticeObj = { month, content };
+            localStorage.setItem('site_announcement', JSON.stringify(noticeObj));
+            applyNoticeToUI(month, content);
+            closeAdminModal();
+            showModal('저장 완료', '공지사항이 성공적으로 반영되었습니다.', 'success');
+        }
+
+        function updatePreview() {
+            const orgInput = document.getElementById('input-org');
+            const hashtagInput = document.getElementById('input-hashtag');
+            const mainInput = document.getElementById('input-main');
+            const subInput = document.getElementById('input-sub');
+            const fontSizeSelect = document.getElementById('font-size-option');
+
+            const org = orgInput ? orgInput.value.trim() : '소속 단체명';
+            const hashtag = hashtagInput ? hashtagInput.value.trim() : '#해시태그';
+            const main = mainInput ? mainInput.value.trim() : '메인 슬로건 문구를 입력하세요';
+            const sub = subInput ? subInput.value.trim() : '부 슬로건 문구를 입력하세요';
+            const fontSize = fontSizeSelect ? fontSizeSelect.value : 'lg';
+
+            const pvOrg = document.getElementById('pv-org');
+            const pvHashtag = document.getElementById('pv-hashtag');
+            const pvMain = document.getElementById('pv-main');
+            const pvSub = document.getElementById('pv-sub');
+
+            if (pvOrg) pvOrg.innerText = org;
+            if (pvHashtag) pvHashtag.innerText = hashtag;
+            if (pvMain) pvMain.innerText = main;
+            if (pvSub) pvSub.innerText = sub;
+
+            if (pvMain) {
+                if (fontSize === 'sm') pvMain.className = "font-banner font-black tracking-tight leading-none break-keep text-base sm:text-xl md:text-2xl whitespace-nowrap overflow-hidden text-ellipsis";
+                else if (fontSize === 'md') pvMain.className = "font-banner font-black tracking-tight leading-none break-keep text-lg sm:text-2xl md:text-3xl whitespace-nowrap overflow-hidden text-ellipsis";
+                else if (fontSize === 'lg') pvMain.className = "font-banner font-black tracking-tight leading-none break-keep text-xl sm:text-3xl md:text-4xl whitespace-nowrap overflow-hidden text-ellipsis";
+                else if (fontSize === 'xl') pvMain.className = "font-banner font-black tracking-tight leading-none break-keep text-2xl sm:text-4xl md:text-5xl whitespace-nowrap overflow-hidden text-ellipsis";
+            }
+
+            const previewBox = document.getElementById('banner-preview-box');
+            const colorConfig = PASTEL_16_COLORS[window.selectedPastelColor] || PASTEL_16_COLORS['white'];
+            
+            if (previewBox) {
+                previewBox.className = `w-full max-w-[1100px] rounded-lg shadow-2xl flex flex-col justify-between p-4 sm:p-6 border transition-all duration-300 relative overflow-hidden text-center ${colorConfig.bg} ${colorConfig.text} ${colorConfig.border}`;
+            }
+            if (pvSub) {
+                pvSub.className = `font-banner font-bold text-[10px] sm:text-xs md:text-sm tracking-normal line-clamp-1 w-full text-center ${colorConfig.subText}`;
+            }
+            const themeBadge = document.getElementById('preview-theme-badge');
+            if (themeBadge) {
+                themeBadge.innerText = `선택 색상: ${colorConfig.name}`;
+            }
+        }
+
+        function setSortMode(mode) {
+            currentSort = mode;
+            const sortLatest = document.getElementById('sort-latest');
+            const sortLikes = document.getElementById('sort-likes');
+            const sortMonthly = document.getElementById('sort-monthly');
+
+            if (sortLatest) sortLatest.className = mode === 'latest' ? "px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-red-600 text-white" : "px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+            if (sortLikes) sortLikes.className = mode === 'likes' ? "px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-red-600 text-white" : "px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+            if (sortMonthly) sortMonthly.className = mode === 'monthly' ? "px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-amber-500 text-slate-950" : "px-3.5 py-1.5 rounded-lg text-xs font-bold transition text-slate-400 hover:text-white";
+
+            const monthlyContainer = document.getElementById('monthly-filter-container');
+            const rankingSection = document.getElementById('ranking-banner-section');
+            const listTableSection = document.getElementById('list-table-section');
+
+            if (mode === 'monthly') {
+                if (monthlyContainer) {
+                    monthlyContainer.classList.remove('hidden');
+                    monthlyContainer.classList.add('flex');
+                }
+                if (rankingSection) rankingSection.classList.remove('hidden');
+                if (listTableSection) listTableSection.classList.add('hidden');
+            } else {
+                if (monthlyContainer) {
+                    monthlyContainer.classList.add('hidden');
+                    monthlyContainer.classList.remove('flex');
+                }
+                if (rankingSection) rankingSection.classList.add('hidden');
+                if (listTableSection) listTableSection.classList.remove('hidden');
+            }
+
+            renderSquare();
+        }
+
+        function renderSquare() {
+            const rankingGrid = document.getElementById('ranking-banner-grid');
+            const listTbody = document.getElementById('square-list-tbody');
+            const emptyEl = document.getElementById('empty-square');
+            const searchInput = document.getElementById('search-keyword');
+            const keyword = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            const bannerList = window.bannerListRef ? window.bannerListRef() : [];
+
+            let filtered = bannerList.filter(item => {
+                return (item.main && item.main.toLowerCase().includes(keyword)) || 
+                       (item.org && item.org.toLowerCase().includes(keyword)) || 
+                       (item.author && item.author.toLowerCase().includes(keyword)) ||
+                       (item.hashtag && item.hashtag.toLowerCase().includes(keyword)) ||
+                       (item.sub && item.sub.toLowerCase().includes(keyword));
+            });
+
+            const listCountBadge = document.getElementById('list-count-badge');
+
+            if (currentSort === 'monthly') {
+                const yearSelect = document.getElementById('filter-year');
+                const monthSelect = document.getElementById('filter-month');
+                const targetYear = yearSelect ? parseInt(yearSelect.value) : 2026;
+                const targetMonth = monthSelect ? parseInt(monthSelect.value) : 10;
+
+                filtered = filtered.filter(item => {
+                    const d = new Date(item.createdAt);
+                    return d.getFullYear() === targetYear && (d.getMonth() + 1) === targetMonth;
+                });
+                filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+
+                if (listCountBadge) listCountBadge.innerText = `${filtered.length}개`;
+
+                if (filtered.length === 0) {
+                    if (rankingGrid) rankingGrid.innerHTML = '';
+                    if (emptyEl) {
+                        emptyEl.classList.remove('hidden');
+                        emptyEl.classList.add('flex');
+                    }
+                    return;
+                }
+
+                if (emptyEl) {
+                    emptyEl.classList.add('hidden');
+                    emptyEl.classList.remove('flex');
+                }
+
+                let rankingHtml = '';
+                filtered.forEach((item, index) => {
+                    const colorConfig = PASTEL_16_COLORS[item.theme] || PASTEL_16_COLORS['white'];
+
+                    let rankBadgeBg = 'bg-slate-800 text-slate-300';
+                    if (index === 0) rankBadgeBg = 'bg-amber-400 text-slate-950 font-black';
+                    else if (index === 1) rankBadgeBg = 'bg-slate-300 text-slate-950 font-bold';
+                    else if (index === 2) rankBadgeBg = 'bg-amber-700 text-white font-bold';
+
+                    rankingHtml += `
+                        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col gap-3 relative overflow-hidden">
+                            <div class="flex items-center justify-between z-20">
+                                <div class="flex items-center gap-2">
+                                    <span class="${rankBadgeBg} text-xs px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+                                        <i class="fa-solid fa-trophy"></i> ${index + 1}위
+                                    </span>
+                                    <span class="text-xs text-red-400 bg-red-500/10 px-2.5 py-0.5 rounded-md border border-red-500/20 font-bold">${escapeHtml(item.hashtag || '#개혁입법')}</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs text-slate-400">
+                                    <span><i class="fa-solid fa-user text-amber-400 mr-1"></i>${escapeHtml(item.author || '익명')}</span>
+                                    <button onclick="window.likeBanner('${item.id}')" class="bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white px-3 py-1 rounded-lg border border-red-500/30 font-bold transition flex items-center gap-1">
+                                        <i class="fa-solid fa-heart text-red-500"></i> 응원하기 (${item.likes || 0})
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="${colorConfig.bg} ${colorConfig.text} ${colorConfig.border} border w-full rounded-xl p-4 sm:p-5 flex flex-col justify-between text-center relative overflow-hidden shadow-inner cursor-pointer" onclick="openBannerModal('${item.id}')" style="aspect-ratio: 6000 / 700; min-height: 120px;">
+                                <div class="z-10 flex items-center justify-between">
+                                    <span class="font-bold text-[11px] sm:text-xs opacity-90 text-red-600">${escapeHtml(item.hashtag || '#개혁입법')}</span>
+                                    <span class="font-banner font-bold text-xs sm:text-sm uppercase">${escapeHtml(item.org)}</span>
+                                    <span class="w-12"></span>
+                                </div>
+                                <div class="z-10 my-auto py-1 text-center">
+                                    <h4 class="font-banner font-black text-sm sm:text-2xl tracking-tight leading-none break-keep whitespace-nowrap overflow-hidden text-ellipsis">${escapeHtml(item.main)}</h4>
+                                </div>
+                                <div class="z-10 border-t ${colorConfig.border} pt-1.5 text-center flex items-center justify-between">
+                                    <p class="font-banner font-bold ${colorConfig.subText} text-[10px] sm:text-xs line-clamp-1 w-full text-center">${escapeHtml(item.sub || '')}</p>
+                                    <span class="text-[9px] font-mono opacity-70 whitespace-nowrap hidden sm:inline-block">ID: ${item.id}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                if (rankingGrid) rankingGrid.innerHTML = rankingHtml;
+
+            } else {
+                if (currentSort === 'latest') {
+                    filtered.sort((a, b) => b.createdAt - a.createdAt);
+                } else if (currentSort === 'likes') {
+                    filtered.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+                }
+
+                if (listCountBadge) listCountBadge.innerText = `${filtered.length}개`;
+
+                if (filtered.length === 0) {
+                    if (listTbody) listTbody.innerHTML = '';
+                    if (emptyEl) {
+                        emptyEl.classList.remove('hidden');
+                        emptyEl.classList.add('flex');
+                    }
+                    return;
+                }
+
+                if (emptyEl) {
+                    emptyEl.classList.add('hidden');
+                    emptyEl.classList.remove('flex');
+                }
+
+                let listHtml = '';
+                filtered.forEach((item, index) => {
+                    const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleDateString('ko-KR') : '-';
+
+                    listHtml += `
+                        <tr class="hover:bg-slate-800/50 transition">
+                            <td class="p-3 text-center text-slate-500 font-mono">${index + 1}</td>
+                            <td class="p-3">
+                                <div class="font-bold text-white">${escapeHtml(item.org)}</div>
+                                <div class="text-[11px] text-red-400 font-bold">${escapeHtml(item.hashtag || '#개혁입법')}</div>
+                            </td>
+                            <td class="p-3">
+                                <div onclick="openBannerModal('${item.id}')" class="font-bold text-slate-200 text-sm hover:text-red-400 transition line-clamp-1 cursor-pointer inline-block" title="클릭하여 상세 보기">
+                                    ${escapeHtml(item.main)}
+                                </div>
+                                <div class="text-[11px] text-slate-500 line-clamp-1">${escapeHtml(item.sub || '')}</div>
+                            </td>
+                            <td class="p-3 text-center text-slate-400 text-[11px]">${dateStr}</td>
+                            <td class="p-3 text-center font-bold text-amber-400">
+                                <i class="fa-solid fa-heart text-red-500 mr-1 text-[10px]"></i>${item.likes || 0}
+                            </td>
+                            <td class="p-3 text-center flex items-center justify-center gap-1">
+                                <button onclick="openBannerModal('${item.id}')" class="bg-slate-800 hover:bg-red-600 text-slate-300 hover:text-white px-2.5 py-1 rounded-lg text-[11px] font-bold transition">
+                                    보기
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                if (listTbody) listTbody.innerHTML = listHtml;
+            }
+        }
+
+        function openBannerModal(id) {
+            const bannerList = window.bannerListRef ? window.bannerListRef() : [];
+            const item = bannerList.find(b => b.id === id);
+            if (!item) return;
+
+            const colorConfig = PASTEL_16_COLORS[item.theme] || PASTEL_16_COLORS['white'];
+            const dateStr = item.createdAt ? new Date(item.createdAt).toLocaleString('ko-KR') : '-';
+
+            const titleEl = document.getElementById('modal-banner-title');
+            const authorEl = document.getElementById('modal-banner-author');
+            const dateEl = document.getElementById('modal-banner-date');
+            const likeCountEl = document.getElementById('modal-like-count');
+
+            if (titleEl) titleEl.innerText = `${item.org} 현수막 시안 상세 보기`;
+            if (authorEl) authorEl.innerHTML = `<i class="fa-solid fa-user text-amber-400 mr-1"></i>작성자: ${escapeHtml(item.author || '익명')}`;
+            if (dateEl) dateEl.innerHTML = `<i class="fa-solid fa-calendar mr-1"></i>등록: ${dateStr}`;
+            if (likeCountEl) likeCountEl.innerText = item.likes || 0;
+
+            const likeBtn = document.getElementById('modal-like-btn');
+            if (likeBtn) likeBtn.onclick = () => window.likeBanner(item.id);
+
+            const deleteBtn = document.getElementById('modal-delete-btn');
+            if (deleteBtn) deleteBtn.onclick = () => openDeleteModal(item.id);
+
+            const container = document.getElementById('modal-banner-container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="w-full max-w-[1300px] rounded-lg shadow-2xl flex flex-col justify-between p-4 sm:p-8 border relative overflow-hidden text-center ${colorConfig.bg} ${colorConfig.text} ${colorConfig.border}" style="aspect-ratio: 6000 / 700; min-height: 140px;">
+                        <div class="z-10 flex items-center justify-between">
+                            <span class="font-bold text-xs sm:text-sm text-red-600 bg-red-500/10 px-2.5 py-0.5 rounded-md border border-red-500/20">${escapeHtml(item.hashtag || '#개혁입법')}</span>
+                            <span class="font-banner font-bold text-xs sm:text-lg lg:text-xl tracking-wider uppercase">${escapeHtml(item.org)}</span>
+                            <span class="w-16"></span>
+                        </div>
+                        <div class="z-10 my-auto py-1 text-center">
+                            <h3 class="font-banner font-black text-base sm:text-3xl lg:text-5xl tracking-tight leading-none break-keep whitespace-nowrap overflow-hidden text-ellipsis">${escapeHtml(item.main)}</h3>
+                        </div>
+                        <div class="z-10 border-t ${colorConfig.border} pt-2 text-center flex items-center justify-between">
+                            <p class="font-banner font-bold ${colorConfig.subText} text-[10px] sm:text-sm lg:text-base line-clamp-1 w-full text-center">${escapeHtml(item.sub || '')}</p>
+                            <span class="text-[9px] sm:text-xs font-mono whitespace-nowrap opacity-70 ml-2">작성자: ${escapeHtml(item.author || '익명')} (ID: ${item.id})</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const modalBackdrop = document.getElementById('banner-modal-backdrop');
+            if (modalBackdrop) modalBackdrop.classList.remove('hidden');
+        }
+
+        function closeBannerModal(e) {
+            if (e && e.target !== e.currentTarget && e.type === 'click') return;
+            const modalBackdrop = document.getElementById('banner-modal-backdrop');
+            if (modalBackdrop) modalBackdrop.classList.add('hidden');
+        }
+
+        function openDeleteModal(id) {
+            window.deleteTargetId = id;
+            const pwInput = document.getElementById('delete-password-input');
+            if (pwInput) pwInput.value = '';
+            const delBackdrop = document.getElementById('delete-modal-backdrop');
+            if (delBackdrop) delBackdrop.classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            window.deleteTargetId = null;
+            const delBackdrop = document.getElementById('delete-modal-backdrop');
+            if (delBackdrop) delBackdrop.classList.add('hidden');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+
+        function showModal(title, desc, type = 'info') {
+            const titleEl = document.getElementById('modal-title');
+            const descEl = document.getElementById('modal-desc');
+            const iconEl = document.getElementById('modal-icon');
+
+            if (titleEl) titleEl.innerText = title;
+            if (descEl) descEl.innerText = desc;
+            
+            if (iconEl) {
+                if (type === 'success') {
+                    iconEl.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-500"></i>';
+                } else {
+                    iconEl.innerHTML = '<i class="fa-solid fa-circle-exclamation text-red-500"></i>';
+                }
+            }
+
+            const backdrop = document.getElementById('modal-backdrop');
+            if (backdrop) backdrop.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            const backdrop = document.getElementById('modal-backdrop');
+            if (backdrop) backdrop.classList.add('hidden');
+        }
+
+        function downloadCanvasImage() {
+            const orgInput = document.getElementById('input-org');
+            const hashtagInput = document.getElementById('input-hashtag');
+            const mainInput = document.getElementById('input-main');
+            const subInput = document.getElementById('input-sub');
+
+            const org = orgInput ? orgInput.value.trim() : '소속 단체명';
+            const hashtag = hashtagInput ? hashtagInput.value.trim() : '#해시태그';
+            const main = mainInput ? mainInput.value.trim() : '메인 슬로건';
+            const sub = subInput ? subInput.value.trim() : '부 슬로건';
+
+            const canvas = document.getElementById('export-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            const canvasWidth = 2400;
+            const canvasHeight = 280;
+
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+
+            const colorConfig = PASTEL_16_COLORS[window.selectedPastelColor] || PASTEL_16_COLORS['white'];
+            ctx.fillStyle = colorConfig.hex;
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            let textX = canvasWidth / 2;
+            ctx.textAlign = 'center';
+
+            ctx.fillStyle = '#dc2626';
+            ctx.font = 'bold 24px "Noto Sans KR", sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(hashtag, 60, 55);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#1e293b';
+            ctx.font = 'bold 36px "Noto Sans KR", sans-serif';
+            ctx.fillText(org, textX, 55);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = '900 52px "Noto Sans KR", sans-serif';
+            ctx.fillText(main, textX, canvasHeight / 2 + 15);
+
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, canvasHeight - 60);
+            ctx.lineTo(canvasWidth - 50, canvasHeight - 60);
+            ctx.stroke();
+
+            ctx.fillStyle = '#475569';
+            ctx.font = 'bold 24px "Noto Sans KR", sans-serif';
+            ctx.fillText(sub, textX, canvasHeight - 22);
+
+            try {
+                const link = document.createElement('a');
+                link.download = `현수막_시안_6000x700_${Date.now()}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            } catch (err) {
+                console.error("캔버스 내보내기 오류:", err);
+                showModal('내보내기 오류', '이미지 추출 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
+</body>
+</html>
+```
+eof
+
+관리자 인증 실패 시 팝업 창에 랭킹 1위 배너의 ID(`topBannerId`)가 노출되지 않도록 경고 메시지를 단순화('인증에 실패했습니다.')하였습니다.
