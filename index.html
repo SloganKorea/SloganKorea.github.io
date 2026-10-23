@@ -303,7 +303,7 @@
         <section id="ranking-banner-section" class="flex flex-col gap-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
                 <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-crown text-amber-400"></i> 이달의 현수막 배너 모음
+                    <i class="fa-solid fa-crown text-amber-400"></i> 이달의 슬로건 모음
                 </h3>
                 <span class="text-xs text-slate-400">월별 랭킹 화면에서 직접 좋아요 응원이 가능합니다</span>
             </div>
@@ -632,9 +632,9 @@
         // 공지사항 통합 소스코드 설정 (소스코드 수정 시 고정 반영)
         // ==========================================
         const NOTICE_CONFIG = {
-            month: '10',
+            month: '11',
             topic: '개혁입법',
-            content: '이달의 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.'
+            content: '이달의 슬로건의 주제는 [#반국가세력규탄#이재명정권규탄] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.'
         };
 
         function initAnnouncementFromCode() {
@@ -773,8 +773,8 @@
 
         function openAdminModal() {
             const savedNotice = localStorage.getItem('site_announcement');
-            let month = '10';
-            let content = '이달의 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.';
+            let month = '11';
+            let content = '이달의 슬로건의 주제는 [이재명정권규탄] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.';
             if (savedNotice) {
                 try {
                     const parsed = JSON.parse(savedNotice);
