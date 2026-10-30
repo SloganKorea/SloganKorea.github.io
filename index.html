@@ -165,8 +165,8 @@
                                 <i class="fa-solid fa-hashtag text-red-400"></i> 주제 (#해시태그) <span class="text-red-500">*</span>
                             </label>
                             <input type="text" id="input-hashtag" required maxlength="20" 
-                                value="#개혁입법" 
-                                placeholder="예: #개혁입법" 
+                                value="#이재명정권규탄" 
+                                placeholder="예: #이재명정권규탄" 
                                 class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-red-500 transition"
                                 oninput="updatePreview()">
                         </div>
@@ -203,10 +203,10 @@
                         </div>
                     </div>
 
-                    <!-- 펜텔 파스텔 16색 팔레트 선택기 -->
+                    <!-- 파스텔 16색 팔레트 선택기 -->
                     <div class="flex flex-col gap-2">
                         <label class="text-xs font-bold text-slate-300 flex items-center justify-between">
-                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-palette text-amber-400"></i> 펜텔 오일 파스텔 16색 팔레트 색상 선택</span>
+                            <span class="flex items-center gap-1.5"><i class="fa-solid fa-palette text-amber-400"></i> 파스텔 16색 팔레트 색상 선택</span>
                             <span id="selected-color-label" class="text-[11px] text-amber-400 font-normal">선택: 화이트 (#ffffff)</span>
                         </label>
                         <div id="pastel-palette-grid" class="grid grid-cols-4 sm:grid-cols-8 gap-2 bg-slate-950/80 p-3 rounded-xl border border-slate-800"></div>
@@ -638,9 +638,9 @@
         // 공지사항 통합 소스코드 설정 (소스코드 수정 시 고정 반영)
         // ==========================================
         const NOTICE_CONFIG = {
-            month: '10',
-            topic: '개혁입법',
-            content: '이달의 슬로건의 주제는 [개혁입법] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.'
+            month: '11',
+            topic: '정권규탄',
+            content: '이달의 슬로건의 주제는 [#이재명정권규탄#부정선거특검규탄#국방안보#기타] 입니다. 많은 공모바랍니다. 1위에 선정되면 실물 현수막으로 게첩됩니다.'
         };
 
         function initAnnouncementFromCode() {
