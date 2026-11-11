@@ -60,8 +60,7 @@
     </header>
 
     <!-- [페이지 A] 현수막 공장 (제작 페이지) -->
-    <main id="page-factory" class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 flex flex-col gap-8">
-        
+    <main id="page-factory" class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 flex flex-col gap-8">  
         <!-- 공지사항란 -->
         <section class="bg-gradient-to-r from-red-950/70 via-slate-900 to-amber-950/50 border border-red-500/30 rounded-2xl p-4 sm:p-5 shadow-xl flex items-center gap-4">
             <div class="bg-red-600/20 text-red-400 p-3 rounded-xl border border-red-500/40 shrink-0">
@@ -71,7 +70,10 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase tracking-wider">NOTICE</span>
-                        <h4 id="announcement-title-factory" class="text-xs sm:text-sm font-bold text-white">이달의 슬로건 공모 안내 : "익명 단체는 랭킹에서 제외됩니다"</h4>
+                       // ==========================================
+                       // [공지사항 설정] 이 영역만 수정하세요!
+                       // ==========================================   
+                        <h4 id="announcement-title-factory" class="text-xs sm:text-sm font-bold text-white">이달의 슬로건 공모 안내 : "익명 단체는 랭킹에서 제외!"</h4>
                     </div>
                 </div>
                 <p id="announcement-text-factory" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium"></p>
@@ -272,7 +274,10 @@
             <div class="flex flex-col gap-1 w-full">
                 <div class="flex items-center gap-2">
                     <span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase tracking-wider">NOTICE</span>
-                    <h4 class="text-xs sm:text-sm font-bold text-white" id="announcement-title-square">이달의 슬로건 공모 안내 : "익명 단체는 랭킹에서 제외됩니다" </h4>
+                    // ==========================================
+                    // [공지사항 설정] 이 영역만 수정하세요!
+                    // ==========================================   
+                    <h4 class="text-xs sm:text-sm font-bold text-white" id="announcement-title-square">이달의 슬로건 공모 안내 : "익명 단체는 랭킹에서 제외!" </h4>
                 </div>
                 <p id="announcement-text" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium"></p>
             </div>
@@ -668,7 +673,9 @@
         const CURRENT_NOW = new Date();
         const CURRENT_YEAR = CURRENT_NOW.getFullYear();
         const CURRENT_MONTH = CURRENT_NOW.getMonth() + 1;
-
+  // ==========================================
+  // [공지사항 설정] 이 영역만 수정하세요!
+  // ==========================================
         const NOTICE_CONFIG = {
             month: String(CURRENT_MONTH),
             topic: '정권규탄',
